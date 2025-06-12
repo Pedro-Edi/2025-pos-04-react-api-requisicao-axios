@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import Link from 'next/link'
 
 import { useEffect, useState } from "react";
 import dados, { TarefaInterface } from "@/data";
@@ -75,6 +76,11 @@ const Home = () => {
 			>
 				Nova Tarefa
 			</button>
+
+			
+			<Link href="/tarefas" className="text-blue-600 underline">
+				Ir para tarefas
+			</Link>
 
 			{mostrarModal && (
 				<ModalTarefa
