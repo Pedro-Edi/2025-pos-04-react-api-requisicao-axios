@@ -1,11 +1,14 @@
 "use client";
 
 import type React from "react";
-
 import { useEffect, useState } from "react";
-import dados, { TarefaInterface } from "@/data";
+import axios from "axios";
+
 import Cabecalho from "@/componentes/Cabecalho";
 import ModalTarefa from "@/componentes/ModalTarefa";
+
+import dados, { TarefaInterface } from "@/data";
+
 
 
 interface TarefaProps {
@@ -49,9 +52,9 @@ const Tarefas: React.FC<TareafasProps> = ({ dados }) => {
 			{dados.map((tarefa) => (
 				<Tarefa
 					key={tarefa.id}
-					titulo={tarefa.title}
+					titulo={(tarefa as any).title || (tarefa as any).todo} 
 					concluido={tarefa.completed}
-				/>
+					/>
 			))}
 		</div>
 	);
@@ -60,6 +63,24 @@ const Tarefas: React.FC<TareafasProps> = ({ dados }) => {
 const Home = () => {
 	const [tarefas, setTarefas] = useState<TarefaInterface[]>(dados);
 	const [mostrarModal, setMostrarModal] = useState(false);
+	const [carregando, setCarregando] = useState(true)
+
+	useEffect(() => {
+		const carregarTarefas = async () => {
+			try {
+			const resposta = await axios.get('https://dummyjson.com/todos')
+			setTarefas(resposta.data.todos)
+			} catch (erro) {
+			console.error('Erro ao buscar tarefas', erro)
+			} finally {
+			setCarregando(false)
+			}
+		}
+
+		carregarTarefas()
+		}, [])
+
+
 
 	function adicionarTarefa(nova: TarefaInterface) {
 		setTarefas([...tarefas, nova]);
